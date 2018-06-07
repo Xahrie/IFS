@@ -1,6 +1,9 @@
 package IFS;
 
-public class Main
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class Main extends Application
 {
     public static Steuerung steuerung;
 
@@ -8,5 +11,18 @@ public class Main
     {
         steuerung = new Steuerung();
         steuerung.execute();
+    }
+
+    public void start(Stage s) throws Exception
+    {
+        steuerung.setStage(s);
+        FX.instance().menue();
+        s.show();
+        steuerung.drawGraph();
+    }
+
+    public static void launching()
+    {
+        launch();
     }
 }

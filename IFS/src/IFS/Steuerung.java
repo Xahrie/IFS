@@ -1,5 +1,7 @@
 package IFS;
 
+import javafx.stage.Stage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ public class Steuerung
     private List<Farndata> tables;
     private int iterations;
     private String outputPath;
+    private Stage stage;
 
     public Steuerung()
     {
@@ -21,10 +24,22 @@ public class Steuerung
         InOut.instance().eingaben();
         fillTables();
         iterate();
+        Main.launching();
+    }
+
+    public void restart()
+    {
+        this.stage.hide();
+        this.tables.clear();
+        InOut.instance().eingaben();
+        fillTables();
+        iterate();
+        this.stage.show();
+        FX.instance().menue();
         drawGraph();
     }
 
-    private void drawGraph()
+    public void drawGraph()
     {
         //TODO
         for(int i = 0; i < iterations; i++)
@@ -80,5 +95,15 @@ public class Steuerung
     public void setOutputPath(String outputPath)
     {
         this.outputPath = outputPath;
+    }
+
+    public Stage getStage()
+    {
+        return stage;
+    }
+
+    public void setStage(Stage stage)
+    {
+        this.stage = stage;
     }
 }

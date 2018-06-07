@@ -13,8 +13,8 @@ public class Farndata
     {
         this.data = new ArrayList<Parameters>();
         this.graph = new Graph();
-        this.x = 0;
-        this.y = 0;
+        this.x = 1000;
+        this.y = 1000;
     }
 
     public void addData(float a, float b, float c, float d, float e, float f, float p)
