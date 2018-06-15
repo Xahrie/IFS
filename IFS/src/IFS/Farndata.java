@@ -1,5 +1,8 @@
 package IFS;
 
+import javafx.scene.shape.Line;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,5 +48,23 @@ public class Farndata
     public Graph getGraph()
     {
         return graph;
+    }
+
+    public void getGraphics(Graphics2D graphics, Color color)
+    {
+        for(Point point : this.graph.getPoints())
+        {
+            graphics.setColor(color);
+            graphics.drawOval((int) Main.steuerung.getXOnGraph(point.getX() - 1),
+                              (int) Main.steuerung.getYOnGraph(point.getY() + 1), 3, 3);
+        }
+        for(Line line : this.graph.getLines())
+        {
+            graphics.setColor(color);
+            graphics.drawLine((int) Main.steuerung.getXOnGraph(line.getStartX()),
+                              (int) Main.steuerung.getYOnGraph(line.getStartY()),
+                              (int) Main.steuerung.getXOnGraph(line.getEndX()),
+                              (int) Main.steuerung.getYOnGraph(line.getEndY()));
+        }
     }
 }
