@@ -1,23 +1,43 @@
 package IFS;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.io.File;
 import java.util.Scanner;
 
+/**
+ * InOut ist eine Klasse, deren Zustaendigkeit es ist, Benutzereigaben zu steuern. Diese Klasse ist
+ * zwar nicht in der Lage Objekte zu erstellen, aber besitzt eine Instanzmethode.
+ */
+@Resource
 public class InOut
 {
     private String outputPath;
 
+    /**
+     * Die InOut-Funktion ist eine Instanzvariable, welche den Nutzen hat, dass man problemlos auf
+     * die Funktionen dieser Klasse zurueckgreifen kann, ohne ein Objekt der Klasse erschaffen zu
+     * muessen. Damit geht man der Verwendung von static-Methoden aus dem Weg.
+     * @return              Instanz der Klasse InOut
+     */
     public static InOut instance()
     {
         return new InOut();
     }
 
+    /**
+     * Die Eingabe-Funktion dient einer Texteingabe/Abfrage aus der Kosole des Programms. Damit
+     * koennen unter anderem Benutzereingaben getaetigt werden.
+     * @param task          Nachricht an den Nutzer, die vor der Abfrage ausgegeben werden soll
+     * @return              Texteingabe des Nutzers
+     */
     private String eingabe(String task)
     {
         System.out.println(task);
         return new Scanner(System.in).nextLine();
     }
-
+    
+    @PostConstruct
     public void eingaben(String ausgabe)
     {
         System.out.println(ausgabe);

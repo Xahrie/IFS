@@ -1,6 +1,7 @@
 package IFS;
 
 import javafx.scene.shape.Line;
+import jdk.nashorn.internal.objects.annotations.Optimistic;
 
 import javax.annotation.PreDestroy;
 import javax.imageio.ImageIO;
@@ -59,8 +60,6 @@ public class Steuerung
      * wie fortgefahren werden soll. Im Falle eines Neustarts kommt der Parameter (boolean) zum
      * Einsatz, da im Falle eines Neustarts die Funktion IFS.Main.start() zum zweiten Mal
      * aufgerufen wuerde, was jedoch nicht zulaessig ist.
-     *
-     *
      */
     public void execute(boolean restarted)
     {
@@ -75,15 +74,13 @@ public class Steuerung
     }
 
     /**
-     * Die Execute-Funktion startet das eigentliche Programm. Beginnt aber zunaechst mit der
-     * Abfrage der Eingabewerte. Daraufhin werden die Tabellen mit vorgegebenen Werten gefuettert.
-     * Mit iterate werden dann die Farne aufgrund der eingegebenen- und vorgegebenen Daten
-     * berechnet. Daraufhin beginnt der grafische Teil des Programms, also die Erstellung des
-     * Bildes. Hier wird zudem auch JavaFX aufgerufen und gestartet, bzw. das Menue geoeffnet und
-     * angezeigt. Damit ist auch die Berechnung abgeschlossen. Danach muss der Nutzer entscheiden,
-     * wie fortgefahren werden soll. Im Falle eines Neustarts kommt der Parameter (boolean) zum
-     * Einsatz, da im Falle eines Neustarts die Funktion IFS.Main.start() zum zweiten Mal
-     * aufgerufen wuerde, was jedoch nicht zulaessig ist.
+     * Die Restart-Funktion wird beim Wunsch nach einem Neustart angewendet und hat nur die
+     * Funktion, execute(boolean) erneut auszufuehren, mit dem hinweis, dass hier ein Neustart
+     * vorliegt.
+     */
+    public void restart()
+    {
+        execute(true);
     }
 
     /**
@@ -91,7 +88,7 @@ public class Steuerung
      * drawGraph() ist nach der Fertigstellung des Programms ueberfluessig und entsprechend
      * markiert.
      */
-    protected void graphicalSolution()
+    private void graphicalSolution()
     {
         drawGraph();
         this.image = createImage();
@@ -109,13 +106,12 @@ public class Steuerung
 
     /**
      * Die CreateImage-Funktion erstellt das Bild, welches fuer die JavaFX-Ausgabe erforderlich
-     * ist. Dafuer wird erstmal das BufferedImage selber erstellt, ohne Inhalt zu besitzen.
+     * ist. Dafuer wird  erst einmal das BufferedImage selber erstellt, ohne Inhalt zu besitzen.
      * Daraufhin bekommt es eine Graphics2D zur Bearbeitung der Flaeche. Die Funktion
      * createCoordinates(Graphics2D) erstellt x- und y-Achse des Koordinatensystems. Zuletzt werden
      * Punkte und Linien der berechneten Farne auf das Bild aufgetragen. Dies geschieht durch die
      * Instanzfunktionen der Klasse IFS.Farndata IFS.Farndata.getGraphics(Graphics2D, Color).
-     *
-     * @return fertiges BufferedImage zur Darstellung in JavaFX.
+     * @return              fertiges BufferedImage zur Darstellung in JavaFX.
      */
     private BufferedImage createImage()
     {
@@ -141,8 +137,7 @@ public class Steuerung
      * berechnet und ebenfalls als Klassenvariable gespeichert. Dies geschieht sowohl fuer die eine
      * , als auch fuer die andere Achse. Zuletzt werden auf Grundlage der Minimal- und Maximalwerte
      * die Achsen gezeichnet.
-     *
-     * @param graphics Liefert die Zeichenoberflaeche
+     * @param graphics      Liefert die Zeichenoberflaeche
      */
     private void createCoordinates(Graphics2D graphics)
     {
@@ -158,9 +153,8 @@ public class Steuerung
     /**
      * Die GetXOnGraph-Funktion hat die Aufgabe errechnete x-Werte so umzurechnen, dass sie fuer
      * das Koordinatensystem brauchbar sind und korrekt dargestellt werden koennen.
-     *
-     * @param x Liefert das mit Algorithmen errechnete x-Wert eines Punktes
-     * @return x-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
+     * @param x             Liefert das mit Algorithmen errechnete x-Wert eines Punktes
+     * @return              x-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
      */
     public double getXOnGraph(double x)
     {
@@ -173,9 +167,8 @@ public class Steuerung
     /**
      * Die GetYOnGraph-Funktion hat die Aufgabe errechnete y-Werte so umzurechnen, dass sie fuer
      * das Koordinatensystem brauchbar sind und korrekt dargestellt werden koennen.
-     *
-     * @param y Liefert das mit Algorithmen errechnete y-Wert eines Punktes
-     * @return y-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
+     * @param y             Liefert das mit Algorithmen errechnete y-Wert eines Punktes
+     * @return              y-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
      */
     public double getYOnGraph(double y)
     {
@@ -195,11 +188,16 @@ public class Steuerung
      * Try-Catch die FileAlreadyExistsException abgefangen. Ist die Datei kein Bild, wuerde es
      * einen weiteren Fehler geben. Daher verwendet man dort zusaetzlich noch eine IOException.
      */
+    @Optimistic
     public void createFile()
     {
+        /*
+
+        Moeglicherweise nicht funktionsfaehig, da file.createNewFile() geloescht
+
+        */
         try
         {
-            outputFile.createNewFile();
             ImageIO.write(this.image, "png", outputFile);
         } catch(IOException e)
         {
@@ -276,8 +274,7 @@ public class Steuerung
 
     /**
      * Dieser Setter setzt die Anzahl der zu durchlaufenden Iterationen.
-     *
-     * @param iterations Anzahl der Iterationen
+     * @param iterations    Anzahl der Iterationen
      */
     public void setIterations(int iterations)
     {
@@ -286,8 +283,7 @@ public class Steuerung
 
     /**
      * Dieser Getter gibt die Ausgabedatei zurueck.
-     *
-     * @return File der Ausgabedatei
+     * @return              File der Ausgabedatei
      */
     public File getOutputFile()
     {
@@ -296,8 +292,7 @@ public class Steuerung
 
     /**
      * Dieser Setter setzt den File fuer die Ausgabedatei
-     *
-     * @param file File der Ausgabedatei
+     * @param file          File der Ausgabedatei
      */
     public void setOutputFile(File file)
     {
@@ -306,8 +301,7 @@ public class Steuerung
 
     /**
      * Dieser Getter gibt das BufferedImage des Bildes zurueck.
-     *
-     * @return BufferedImage des Bildes
+     * @return              BufferedImage des Bildes
      */
     public BufferedImage getImage()
     {
@@ -316,8 +310,7 @@ public class Steuerung
 
     /**
      * Dieser Getter gibt das FX das fuer das Menue zustaendig ist zurueck.
-     *
-     * @return FX fuer das Menue
+     * @return              FX fuer das Menue
      */
     public FX getMenue()
     {
