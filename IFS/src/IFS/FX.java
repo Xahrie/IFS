@@ -1,5 +1,6 @@
 package IFS;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -7,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class FX implements EventHandler<ActionEvent>
@@ -16,9 +16,8 @@ public class FX implements EventHandler<ActionEvent>
     private Button close = new Button("Programm beenden");
     private Button restart = new Button("Programm neustarten");
 
-    public static FX instance()
+    public FX()
     {
-        return new FX();
     }
 
     public void menue()
@@ -28,15 +27,29 @@ public class FX implements EventHandler<ActionEvent>
         Label label = new Label("Benutzermenue");
         parent.getChildren().add(label);
 
-        Label output = new Label(
-                "Hier soll irgendwann einmal das Diagramm hinein gesetzt werden, dass dann e" +
-                "xportiert werden koennen soll.");
+        Label output = new Label("Hier soll irgendwann einmal das Diagramm hinein gesetzt werden" +
+                                 ", dass dann exportiert werden koennen soll.");
         parent.getChildren().add(output);
 
-        Image img = new Image("image.png");
-        ImageView imgView = new ImageView(img);
-        StackPane root = new StackPane();
-        root.getChildren().add(imgView);
+        /*if(Main.steuerung.getOutputFile().exists())
+        {
+            System.out.print(Main.steuerung.getOutputFile().getPath().substring(
+                    Main.steuerung.getOutputFile().getPath().indexOf("dateien\\")));
+
+            //Image image = new Image(Main.steuerung.getOutputFile().getPath().substring(
+            //        Main.steuerung.getOutputFile().getPath().indexOf("dateien\\")));
+            //Image image = new Image((Main.steuerung.getOutputFile().getPath().substring(
+            //      Main.steuerung.getOutputFile().getPath().indexOf("dateien\\"))));
+            //Image image2 = new Image(Main.steuerung.getOutputFile().getPath());
+            Image image = new Image("dateien\\image.png");
+            ImageView view = new ImageView(image);
+            parent.getChildren().add(view);
+        }*/
+
+        Image image = SwingFXUtils.toFXImage(Main.steuerung.getImage()
+                , null);
+        ImageView view = new ImageView(image);
+        parent.getChildren().add(view);
 
         export.setOnAction(this);
         parent.getChildren().add(export);
@@ -48,7 +61,7 @@ public class FX implements EventHandler<ActionEvent>
         parent.getChildren().add(restart);
 
         Scene scene = new Scene(parent);
-        Main.steuerung.getStage().setScene(scene);
+        Main.stage.setScene(scene);
     }
 
     @Override
@@ -56,10 +69,11 @@ public class FX implements EventHandler<ActionEvent>
     {
         if(event.getSource().equals(restart))
         {
+            Main.steuerung = new Steuerung();
             Main.steuerung.restart();
         }
         else if(event.getSource().equals(export))
-            System.out.println("Exportiere");
+            Main.steuerung.createFile();
         else if(event.getSource().equals(close))
             System.exit(0);
     }
