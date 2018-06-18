@@ -36,7 +36,7 @@ public class InOut
         System.out.println(task);
         return new Scanner(System.in).nextLine();
     }
-    
+
     @PostConstruct
     public void eingaben(String ausgabe)
     {
