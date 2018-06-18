@@ -1,7 +1,6 @@
 package IFS;
 
 import javafx.scene.shape.Line;
-import jdk.nashorn.internal.objects.annotations.Optimistic;
 
 import javax.annotation.PreDestroy;
 import javax.imageio.ImageIO;
@@ -17,13 +16,13 @@ import java.util.List;
 /**
  * Steuerung ist eine Klasse die gleichnamige Instanzen beschreibt. Diese besitzen verschiedene
  * Eigenschaften. Die Steuerung speichert Tabellen und Berechnungsergebnisse verschiedener Farne,
- * die Anzahl der Iterationen zur Berechnung dieser Farne, die Ausgabedatei im Falle eines Exports
- * , die darzustellende Bilddatei im PNG-Format, die Skalierung der beiden Achsen des
+ * die Anzahl der Iterationen zur Berechnung dieser Farne, die Ausgabedatei im Falle eines Exports,
+ * die darzustellende Bilddatei im PNG-Format, die Skalierung der beiden Achsen des
  * Koordinatensystems, die groessten- und kleinsten Werte innerhalb des Koordinatensystems und das
  * Anzeigemenue, dass die berechneten Daten grafisch darstellt.
- *
- * @version 1.3
- * @since 1.0
+ * @author Steve Woywod
+ * @author Martin Zeyner
+ * @since v1.0
  */
 public class Steuerung
 {
@@ -33,14 +32,14 @@ public class Steuerung
     private BufferedImage image;
     private float scaleX;
     private float scaleY;
-    private float xmax = 0;
-    private float ymax = 0;
-    private float xmin = 0;
-    private float ymin = 0;
+    private float xMax = 0;
+    private float yMax = 0;
+    private float xMin = 0;
+    private float yMin = 0;
     private FX menue;
 
     /**
-     * Die Steuerung-Funktion ruft diese Klasse auf und fuellt die Klassenvariablen auf.
+     * Die Steuerung-Methode ruft diese Klasse auf und fuellt die Klassenvariablen auf.
      */
     public Steuerung()
     {
@@ -51,15 +50,16 @@ public class Steuerung
     }
 
     /**
-     * Die Execute-Funktion startet das eigentliche Programm. Beginnt aber zunaechst mit der
-     * Abfrage der Eingabewerte. Daraufhin werden die Tabellen mit vorgegebenen Werten gefuettert.
-     * Mit iterate werden dann die Farne aufgrund der eingegebenen- und vorgegebenen Daten
-     * berechnet. Daraufhin beginnt der grafische Teil des Programms, also die Erstellung des
-     * Bildes. Hier wird zudem auch JavaFX aufgerufen und gestartet, bzw. das Menue geoeffnet und
-     * angezeigt. Damit ist auch die Berechnung abgeschlossen. Danach muss der Nutzer entscheiden,
-     * wie fortgefahren werden soll. Im Falle eines Neustarts kommt der Parameter (boolean) zum
-     * Einsatz, da im Falle eines Neustarts die Funktion IFS.Main.start() zum zweiten Mal
-     * aufgerufen wuerde, was jedoch nicht zulaessig ist.
+     * Die Execute-Methode startet das eigentliche Programm. Beginnt aber zunaechst mit der Abfrage
+     * der Eingabewerte. Daraufhin werden die Tabellen mit vorgegebenen Werten gefuettert. Mit
+     * iterate werden dann die Farne aufgrund der eingegebenen- und vorgegebenen Daten berechnet.
+     * Daraufhin beginnt der grafische Teil des Programms, also die Erstellung des Bildes. Hier wird
+     * zudem auch JavaFX aufgerufen und gestartet, bzw. das Menue geoeffnet und angezeigt. Damit ist
+     * auch die Berechnung abgeschlossen. Danach muss der Nutzer entscheiden, wie fortgefahren
+     * werden soll. Im Falle eines Neustarts kommt der Parameter (boolean) zum Einsatz, da im Falle
+     * eines Neustarts die Methode IFS.Main.start() zum zweiten Mal aufgerufen wuerde, was jedoch
+     * nicht zulaessig ist.
+     * @param restarted (boolean) der abfragt, ob das Programm jetzt neu ausgefuehrt wird
      */
     public void execute(boolean restarted)
     {
@@ -74,9 +74,8 @@ public class Steuerung
     }
 
     /**
-     * Die Restart-Funktion wird beim Wunsch nach einem Neustart angewendet und hat nur die
-     * Funktion, execute(boolean) erneut auszufuehren, mit dem hinweis, dass hier ein Neustart
-     * vorliegt.
+     * Die Restart-Methode wird beim Wunsch nach einem Neustart angewendet und hat nur die Methode,
+     * execute(boolean) erneut auszufuehren, mit dem hinweis, dass hier ein Neustart vorliegt.
      */
     public void restart()
     {
@@ -84,7 +83,7 @@ public class Steuerung
     }
 
     /**
-     * Dabei wird das BufferedImage aus createGraph() als Klassenvariable gesetzt. Die Funktion
+     * Dabei wird das BufferedImage aus createGraph() als Klassenvariable gesetzt. Die Methode
      * drawGraph() ist nach der Fertigstellung des Programms ueberfluessig und entsprechend
      * markiert.
      */
@@ -105,13 +104,13 @@ public class Steuerung
     }
 
     /**
-     * Die CreateImage-Funktion erstellt das Bild, welches fuer die JavaFX-Ausgabe erforderlich
-     * ist. Dafuer wird  erst einmal das BufferedImage selber erstellt, ohne Inhalt zu besitzen.
-     * Daraufhin bekommt es eine Graphics2D zur Bearbeitung der Flaeche. Die Funktion
+     * Die CreateImage-Methode erstellt das Bild, welches fuer die JavaFX-Ausgabe erforderlich ist.
+     * Dafuer wird  erst einmal das BufferedImage selber erstellt, ohne Inhalt zu besitzen.
+     * Daraufhin bekommt es eine Graphics2D zur Bearbeitung der Flaeche. Die Methode
      * createCoordinates(Graphics2D) erstellt x- und y-Achse des Koordinatensystems. Zuletzt werden
      * Punkte und Linien der berechneten Farne auf das Bild aufgetragen. Dies geschieht durch die
-     * Instanzfunktionen der Klasse IFS.Farndata IFS.Farndata.getGraphics(Graphics2D, Color).
-     * @return              fertiges BufferedImage zur Darstellung in JavaFX.
+     * Instanzmethoden der Klasse IFS.Farndata IFS.Farndata.getGraphics(Graphics2D, Color).
+     * @return fertiges BufferedImage zur Darstellung in JavaFX.
      */
     private BufferedImage createImage()
     {
@@ -124,78 +123,68 @@ public class Steuerung
         tables.get(1).getGraphics(graphics, Color.RED);
         tables.get(2).getGraphics(graphics, Color.GREEN);
         tables.get(3).getGraphics(graphics, Color.YELLOW);
-        /*for(Farndata farndata : this.tables)
-        {
-            farndata.getGraphics(graphics, Color.WHITE);
-        }*/
         return image;
     }
 
     /**
-     * Die CreateCoordinates-Funktion erstellt die Achsen des Koordinatensystems auf der Graphics2D-
+     * Die CreateCoordinates-Methode erstellt die Achsen des Koordinatensystems auf der Graphics2D-
      * Oberflaeche, die als Parameter mitgegeben wird. Gefolgt davon wird die Skalierung der Achsen
-     * berechnet und ebenfalls als Klassenvariable gespeichert. Dies geschieht sowohl fuer die eine
-     * , als auch fuer die andere Achse. Zuletzt werden auf Grundlage der Minimal- und Maximalwerte
+     * berechnet und ebenfalls als Klassenvariable gespeichert. Dies geschieht sowohl fuer die eine,
+     * als auch fuer die andere Achse. Zuletzt werden auf Grundlage der Minimal- und Maximalwerte
      * die Achsen gezeichnet.
-     * @param graphics      Liefert die Zeichenoberflaeche
+     * @param graphics Liefert die Zeichenoberflaeche
      */
     private void createCoordinates(Graphics2D graphics)
     {
-        this.scaleX = 900 / (xmax + Math.abs(xmin));
-        this.scaleY = 500 / (ymax + Math.abs(ymin));
-        int diffx = (int) (900 * (Math.abs(xmin) / (Math.abs(xmin) + xmax)));
-        int diffy = (int) (500 * (ymax / (ymax + Math.abs(ymin))));
-        graphics.drawLine(30, 20 + diffy, 930, 20 + diffy);   // x-Achse
-        graphics.drawLine(30 + diffx, 20, 30 + diffx, 520);     // y-Achse
+        this.scaleX = 900 / (xMax + Math.abs(xMin));
+        this.scaleY = 500 / (yMax + Math.abs(yMin));
+        int diffX = (int) (900 * (Math.abs(xMin) / (Math.abs(xMin) + xMax)));
+        int diffY = (int) (500 * (yMax / (yMax + Math.abs(yMin))));
+        graphics.drawLine(30, 20 + diffY, 930, 20 + diffY);   // x-Achse
+        graphics.drawLine(30 + diffX, 20, 30 + diffX, 520);     // y-Achse
         // TODO Achsen muessen noch beschriftet werden
     }
 
     /**
-     * Die GetXOnGraph-Funktion hat die Aufgabe errechnete x-Werte so umzurechnen, dass sie fuer
-     * das Koordinatensystem brauchbar sind und korrekt dargestellt werden koennen.
-     * @param x             Liefert das mit Algorithmen errechnete x-Wert eines Punktes
-     * @return              x-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
+     * Die GetXOnGraph-Methode hat die Aufgabe errechnete x-Werte so umzurechnen, dass sie fuer das
+     * Koordinatensystem brauchbar sind und korrekt dargestellt werden koennen.
+     * @param x Liefert das mit Algorithmen errechnete x-Wert eines Punktes
+     * @return x-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
      */
     public double getXOnGraph(double x)
     {
         if(x >= 0)
-            return (Math.abs(xmin) + x) * scaleX + 30;
+            return (Math.abs(xMin) + x) * scaleX + 30;
         else
-            return (Math.abs(xmin - x)) * scaleX + 30;
+            return (Math.abs(xMin - x)) * scaleX + 30;
     }
 
     /**
-     * Die GetYOnGraph-Funktion hat die Aufgabe errechnete y-Werte so umzurechnen, dass sie fuer
-     * das Koordinatensystem brauchbar sind und korrekt dargestellt werden koennen.
-     * @param y             Liefert das mit Algorithmen errechnete y-Wert eines Punktes
-     * @return              y-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
+     * Die GetYOnGraph-Methode hat die Aufgabe errechnete y-Werte so umzurechnen, dass sie fuer das
+     * Koordinatensystem brauchbar sind und korrekt dargestellt werden koennen.
+     * @param y Liefert das mit Algorithmen errechnete y-Wert eines Punktes
+     * @return y-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
      */
     public double getYOnGraph(double y)
     {
         if(y >= 0)
             return 520 - y * scaleY;
         else
-            return 520 - (xmax + Math.abs(y)) * scaleY;
+            return 520 - (xMax + Math.abs(y)) * scaleY;
     }
 
     /**
-     * Die CreateFile-Funktion soll zur Erstellung der PNG-Datei genutzt werden. Das ist Relevant,
+     * Die CreateFile-Methode soll zur Erstellung der PNG-Datei genutzt werden. Das ist Relevant,
      * wenn der Nutzer des Programms auf der JavaFX-Oberflaeche auf 'Exportieren' klickt. Diese
-     * Funktion wird von IFS.FX.handle() aufgerufen. Da ja die moegliche Datei als Klassenvariable
+     * Methode wird von IFS.FX.handle() aufgerufen. Da ja die moegliche Datei als Klassenvariable
      * gespeichert wird laesst diese sich hier aufrufen. So wird zunaechst die Datei erstellt, wenn
-     * sie nicht bereits existiert, und das Bild wird ueber javax.imageio.ImageIO in die Datei
-     * geschrieben. Da moeglicherweise die Datei bereits existieren koennte wird mit einem
-     * Try-Catch die FileAlreadyExistsException abgefangen. Ist die Datei kein Bild, wuerde es
-     * einen weiteren Fehler geben. Daher verwendet man dort zusaetzlich noch eine IOException.
+     * sie nicht bereits existiert, und das Bild wird ueber javax.imageio .ImageIO in die Datei
+     * geschrieben. Ist die Datei kein Bild, wuerde es einen weiteren Fehler geben. Daher man
+     * verwendet man dort zusaetzlich noch eine IOException.
+     * @throws IOException wenn die Datei bereits existiert, gibt es einen Fehler
      */
-    @Optimistic
     public void createFile()
     {
-        /*
-
-        Moeglicherweise nicht funktionsfaehig, da file.createNewFile() geloescht
-
-        */
         try
         {
             ImageIO.write(this.image, "png", outputFile);
@@ -206,13 +195,13 @@ public class Steuerung
     }
 
     /**
-     * Die Iterate-Funktion fuehrt auf Grundlage der Formel aus IFS.Farndata.berechnung() die
-     * Berechnung der Punkte aus. Die geschieht zunächst fuer jede einzelne Iteration innerhalb
+     * Die Iterate-Methode fuehrt auf Grundlage der Formel aus IFS.Farndata.berechnung() die
+     * Berechnung der Punkte aus. Die geschieht zunaechst fuer jede einzelne Iteration innerhalb
      * jedes Farns. Die Ergebnisse der Punkte werden bei jedem Graph als Punkt hinzugefuegt. Diese
-     * Funktion berechnet nun die Minimal- und Maximalwerte der Daten und speichert diese weiter
-     * oben als Klassenvariablen. Zudem wird noch fuer jede Iteration die entsprechende Linie
-     * errechnet, welcher die Punkte verbinden soll. Diese wird auch zu der Menge der Linien des
-     * Graph des entsprechenden Farnes hinzugefuegt.
+     * Methode berechnet nun die Minimal- und Maximalwerte der Daten und speichert diese weiter oben
+     * als Klassenvariablen. Zudem wird noch fuer jede Iteration die entsprechende Linie errechnet,
+     * welcher die Punkte verbinden soll. Diese wird auch zu der Menge der Linien des Graph des
+     * entsprechenden Farnes hinzugefuegt.
      */
     private void iterate()
     {
@@ -222,14 +211,14 @@ public class Steuerung
             {
                 Point point = f.berechnung();
                 f.getGraph().addPoint(point);
-                if(point.getY() > ymax)
-                    ymax = point.getY();
-                if(point.getX() > xmax)
-                    xmax = point.getX();
-                if(point.getX() < xmin)
-                    xmin = point.getX();
-                if(point.getY() < ymin)
-                    ymin = point.getY();
+                if(point.getY() > yMax)
+                    yMax = point.getY();
+                if(point.getX() > xMax)
+                    xMax = point.getX();
+                if(point.getX() < xMin)
+                    xMin = point.getX();
+                if(point.getY() < yMin)
+                    yMin = point.getY();
             }
             for(int i = 1; i < this.iterations; i++)
             {
@@ -243,7 +232,7 @@ public class Steuerung
     }
 
     /**
-     * Die FillTables-Funktion wird zu Beginn mit execute() aufgerufen. Diese Funktion ist dafuer
+     * Die FillTables-Methode wird zu Beginn mit execute() aufgerufen. Diese Methode ist dafuer
      * verantwortlich, die Parameter fuer die Berechnung zu fuellen. Davor werden jedoch noch die
      * unterschiedlichen Farne erstellt.
      */
@@ -273,8 +262,7 @@ public class Steuerung
     }
 
     /**
-     * Dieser Setter setzt die Anzahl der zu durchlaufenden Iterationen.
-     * @param iterations    Anzahl der Iterationen
+     * @param iterations Anzahl der Iterationen
      */
     public void setIterations(int iterations)
     {
@@ -282,8 +270,7 @@ public class Steuerung
     }
 
     /**
-     * Dieser Getter gibt die Ausgabedatei zurueck.
-     * @return              File der Ausgabedatei
+     * @return File der Ausgabedatei
      */
     public File getOutputFile()
     {
@@ -291,8 +278,7 @@ public class Steuerung
     }
 
     /**
-     * Dieser Setter setzt den File fuer die Ausgabedatei
-     * @param file          File der Ausgabedatei
+     * @param file File der Ausgabedatei
      */
     public void setOutputFile(File file)
     {
@@ -300,8 +286,7 @@ public class Steuerung
     }
 
     /**
-     * Dieser Getter gibt das BufferedImage des Bildes zurueck.
-     * @return              BufferedImage des Bildes
+     * @return BufferedImage des Bildes
      */
     public BufferedImage getImage()
     {
@@ -309,8 +294,7 @@ public class Steuerung
     }
 
     /**
-     * Dieser Getter gibt das FX das fuer das Menue zustaendig ist zurueck.
-     * @return              FX fuer das Menue
+     * @return FX fuer das Menue
      */
     public FX getMenue()
     {

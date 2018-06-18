@@ -4,11 +4,11 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
- * Main ist die Klasse welche dafuer zustaendig ist, das Programm zu starten und sorgt auch fuer
- * die problemlose Ausfuehrung von JavaFX.
- *
- * @version 1.3
- * @since 1.0
+ * Main ist die Klasse welche dafuer zustaendig ist, das Programm zu starten und sorgt auch fuer die
+ * problemlose Ausfuehrung von JavaFX.
+ * @author Steve Woywod
+ * @author Martin Zeyner
+ * @since v1.0
  */
 public class Main extends Application
 {
@@ -16,10 +16,9 @@ public class Main extends Application
     public static Stage stage;
 
     /**
-     * Main startet das Programm und ruft eine neue Instanz der Steuerung auf. Deren Funktion
+     * Main startet das Programm und ruft eine neue Instanz der Steuerung auf. Deren Methode
      * execute(boolean) startet dann die Algorithmen.
-     *
-     * @param args
+     * @param args Automatisch generiert (Main-Methode)
      */
     public static void main(String[] args)
     {
@@ -28,7 +27,7 @@ public class Main extends Application
     }
 
     /**
-     * Launching dient zum Starten der JavaFX-Funktion.
+     * Die Launching-Methode dient zum Starten der JavaFX-Methode.
      */
     public static void launching()
     {
@@ -36,16 +35,14 @@ public class Main extends Application
     }
 
     /**
-     * Start wurde von Application implementiert. Diese Funktion ist essentiell zur Erstellung bzw.
-     * Nutzung von JavaFX.
-     *
-     * @param s
+     * Die Start-Methode wurde von Application implementiert. Diese Methode ist essentiell zur
+     * Erstellung bzw. Nutzung von JavaFX.
+     * @param s Stage fuer das verwendete JavaFX
      */
     public void start(Stage s)
     {
         stage = s;
         steuerung.getMenue().menue();
-        Main.steuerung.setIterations(0);
         s.show();
     }
 }

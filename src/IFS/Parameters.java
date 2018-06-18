@@ -5,13 +5,16 @@ package IFS;
  * Eigenschaften. Die Parameters speichert Parameter, die zur Berechnung der Farne dienen. Diese
  * Parameter tragen die Namen a, b, c, d, e, f und p fuer die Wahrscheinlichkeit. Diese werden aus
  * den Tabellen uebernommen und eingelesen.
+ * @author Steve Woywod
+ * @author Martin Zeyner
+ * @since v1.0
  */
 public class Parameters
 {
     private float a, b, c, d, e, f, p;
 
     /**
-     * Die Parameters-Funktion ruft diese Klasse auf und fuellt die einzelnen Parameter zur
+     * Die Parameters-Methode ruft diese Klasse auf und fuellt die einzelnen Parameter zur
      * Berechnung auf.
      */
     public Parameters(float a, float b, float c, float d, float e, float f, float p)
@@ -26,8 +29,7 @@ public class Parameters
     }
 
     /**
-     * Dieser Getter gibt a zurueck.
-     * @return              Parameter a
+     * @return Parameter a
      */
     public float getA()
     {
@@ -35,8 +37,7 @@ public class Parameters
     }
 
     /**
-     * Dieser Getter gibt b zurueck.
-     * @return              Parameter b
+     * @return Parameter b
      */
     public float getB()
     {
@@ -44,8 +45,7 @@ public class Parameters
     }
 
     /**
-     * Dieser Getter gibt c zurueck.
-     * @return              Parameter c
+     * @return Parameter c
      */
     public float getC()
     {
@@ -53,8 +53,7 @@ public class Parameters
     }
 
     /**
-     * Dieser Getter gibt d zurueck.
-     * @return              Parameter d
+     * @return Parameter d
      */
     public float getD()
     {
@@ -62,8 +61,7 @@ public class Parameters
     }
 
     /**
-     * Dieser Getter gibt e zurueck.
-     * @return              Parameter e
+     * @return Parameter e
      */
     public float getE()
     {
@@ -71,8 +69,7 @@ public class Parameters
     }
 
     /**
-     * Dieser Getter gibt f zurueck.
-     * @return              Parameter f
+     * @return Parameter f
      */
     public float getF()
     {
@@ -80,8 +77,7 @@ public class Parameters
     }
 
     /**
-     * Dieser Getter gibt p zurueck.
-     * @return              Parameter p
+     * @return Parameter p
      */
     public float getP()
     {
