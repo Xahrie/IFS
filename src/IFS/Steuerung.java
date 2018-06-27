@@ -8,8 +8,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +27,7 @@ import java.util.List;
 public class Steuerung
 {
     private List<Farndata> tables;
+    private Farndata custom;
     private int iterations;
     private File outputFile;
     private BufferedImage image;
@@ -37,6 +38,7 @@ public class Steuerung
     private float xMin = 0;
     private float yMin = 0;
     private FX menue;
+    private List<String> colors;
 
     /**
      * Die Steuerung-Methode ruft diese Klasse auf und fuellt die Klassenvariablen auf.
@@ -47,6 +49,7 @@ public class Steuerung
         this.iterations = 0;
         this.outputFile = new File("default.txt");
         this.menue = new FX();
+        this.colors = new ArrayList<String>();
     }
 
     /**
@@ -59,27 +62,21 @@ public class Steuerung
      * werden soll. Im Falle eines Neustarts kommt der Parameter (boolean) zum Einsatz, da im Falle
      * eines Neustarts die Methode IFS.Main.start() zum zweiten Mal aufgerufen wuerde, was jedoch
      * nicht zulaessig ist.
-     * @param restarted (boolean) der abfragt, ob das Programm jetzt neu ausgefuehrt wird
      */
-    public void execute(boolean restarted)
+    public void execute()
     {
-        InOut.instance().eingaben("");
+        //InOut.instance().eingaben("");
         fillTables();
-        iterate();
-        graphicalSolution();
-        if(!restarted)
-            Main.launching();
-        else
+        //iterate(false);
+        //graphicalSolution();
+        Main.launching();
+        try
+        {
             menue.menue();
-    }
-
-    /**
-     * Die Restart-Methode wird beim Wunsch nach einem Neustart angewendet und hat nur die Methode,
-     * execute(boolean) erneut auszufuehren, mit dem hinweis, dass hier ein Neustart vorliegt.
-     */
-    public void restart()
-    {
-        execute(true);
+        } catch(IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -87,20 +84,9 @@ public class Steuerung
      * drawGraph() ist nach der Fertigstellung des Programms ueberfluessig und entsprechend
      * markiert.
      */
-    private void graphicalSolution()
+    public void graphicalSolution()
     {
-        drawGraph();
         this.image = createImage();
-    }
-
-    @PreDestroy
-    private void drawGraph()
-    {
-        for(int i = 0; i < iterations; i++)
-            for(int j = 0; j < 4; j++)
-                System.out.println(
-                        "X : " + tables.get(j).getGraph().getPoints().get(i).getX() + "...Y : " +
-                        tables.get(j).getGraph().getPoints().get(i).getY());
     }
 
     /**
@@ -119,10 +105,37 @@ public class Steuerung
                                    .getDefaultConfiguration().createCompatibleImage(960, 540);
         Graphics2D graphics = image.createGraphics();
         createCoordinates(graphics);
-        tables.get(0).getGraphics(graphics, Color.CYAN);
-        tables.get(1).getGraphics(graphics, Color.RED);
-        tables.get(2).getGraphics(graphics, Color.GREEN);
-        tables.get(3).getGraphics(graphics, Color.YELLOW);
+        if(this.colors == null)
+        {
+            assert false;
+            if(colors.size() == 4)
+            {
+                tables.get(0).getGraphics(graphics, getColorFromString(colors.get(0)));
+                tables.get(1).getGraphics(graphics, getColorFromString(colors.get(1)));
+                tables.get(2).getGraphics(graphics, getColorFromString(colors.get(2)));
+                tables.get(3).getGraphics(graphics, getColorFromString(colors.get(3)));
+            } else if(colors.size() == 1)
+            {
+                tables.get(0).getGraphics(graphics, getColorFromString(colors.get(0)));
+                tables.get(1).getGraphics(graphics, getColorFromString(colors.get(0)));
+                tables.get(2).getGraphics(graphics, getColorFromString(colors.get(0)));
+                tables.get(3).getGraphics(graphics, getColorFromString(colors.get(0)));
+            } else
+            {
+                tables.get(0).getGraphics(graphics, Color.CYAN);
+                tables.get(1).getGraphics(graphics, Color.RED);
+                tables.get(2).getGraphics(graphics, Color.GREEN);
+                tables.get(3).getGraphics(graphics, Color.YELLOW);
+            }
+        } else
+        {
+            if(colors.size() == 4)
+                custom.getGraphics(graphics, getColorFromString(colors.get(custom.getNumber())));
+            else if(colors.size() == 1)
+                custom.getGraphics(graphics, getColorFromString(colors.get(custom.getNumber())));
+            else
+                custom.getGraphics(graphics, Color.CYAN);
+        }
         return image;
     }
 
@@ -203,31 +216,52 @@ public class Steuerung
      * welcher die Punkte verbinden soll. Diese wird auch zu der Menge der Linien des Graph des
      * entsprechenden Farnes hinzugefuegt.
      */
-    private void iterate()
+    public void iterate(boolean customData)
     {
-        for(Farndata f : this.tables)
+        if(!customData)
         {
-            for(int i = 0; i < this.iterations; i++)
+            for(Farndata f : this.tables)
             {
-                Point point = f.berechnung();
-                f.getGraph().addPoint(point);
-                if(point.getY() > yMax)
-                    yMax = point.getY();
-                if(point.getX() > xMax)
-                    xMax = point.getX();
-                if(point.getX() < xMin)
-                    xMin = point.getX();
-                if(point.getY() < yMin)
-                    yMin = point.getY();
+                calculatePoints(f);
+                for(int i = 1; i < this.iterations; i++)
+                {
+                    Line line = new Line(f.getGraph().getPoints().get(i - 1).getX(),
+                                         f.getGraph().getPoints().get(i - 1).getY(),
+                                         f.getGraph().getPoints().get(i).getX(),
+                                         f.getGraph().getPoints().get(i).getY());
+                    f.getGraph().addLine(line);
+                }
             }
+
+        } else
+        {
+            calculatePoints(custom);
             for(int i = 1; i < this.iterations; i++)
             {
-                Line line = new Line(f.getGraph().getPoints().get(i - 1).getX(),
-                                     f.getGraph().getPoints().get(i - 1).getY(),
-                                     f.getGraph().getPoints().get(i).getX(),
-                                     f.getGraph().getPoints().get(i).getY());
-                f.getGraph().addLine(line);
+                Line line = new Line(custom.getGraph().getPoints().get(i - 1).getX(),
+                                     custom.getGraph().getPoints().get(i - 1).getY(),
+                                     custom.getGraph().getPoints().get(i).getX(),
+                                     custom.getGraph().getPoints().get(i).getY());
+                custom.getGraph().addLine(line);
             }
+        }
+
+    }
+
+    private void calculatePoints(Farndata data)
+    {
+        for(int i = 0; i < this.iterations; i++)
+        {
+            Point point = custom.berechnung();
+            custom.getGraph().addPoint(point);
+            if(point.getY() > yMax)
+                yMax = point.getY();
+            if(point.getX() > xMax)
+                xMax = point.getX();
+            if(point.getX() < xMin)
+                xMin = point.getX();
+            if(point.getY() < yMin)
+                yMin = point.getY();
         }
     }
 
@@ -259,6 +293,55 @@ public class Steuerung
         this.tables.get(3).addData(-0.1f, 0.2f, -0.4f, 0.2f, 0.51f, 0.28f, 0.09f);
         this.tables.get(3).addData(-0.09f, -0.2f, 0.4f, 0.13f, 0.5f, 0f, 0.1f);
         this.tables.get(3).addData(0f, 0f, 0f, 0.2f, 0.46f, 0.02f, 0.03f);
+    }
+
+    public void generateData(File file) throws IOException
+    {
+        this.custom = new Farndata();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file.getPath()));
+        StringBuilder line = new StringBuilder();
+        for(int i = 0; i < 4; i++)
+        {
+            List<Float> values = new ArrayList<Float>();
+            line.append(bufferedReader.readLine());
+            for(int j = 0; j < 7; j++)
+            {
+                values.add(Float.valueOf(line.substring(0, line.indexOf(" "))));
+                line.delete(0, line.indexOf(" ") + 1);
+            }
+            custom.addData(values.get(0), values.get(1), values.get(2), values.get(3), values.get
+                    (4), values.get(5), values.get(6));
+
+        }
+        bufferedReader.close();
+    }
+
+    public String fileToTXT(String fileString)
+    {
+        String outputPath = fileString;
+        if(fileString.contains("."))
+            outputPath = outputPath.substring(0, outputPath.indexOf('.'));
+        outputPath = outputPath + ".txt";
+        return outputPath;
+    }
+
+    private Color getColorFromString(String string)
+    {
+        switch(string)
+        {
+            case "blau" : return Color.BLUE;
+            case "cyan" : return Color.CYAN;
+            case "dunkelgrau" : return Color.DARK_GRAY;
+            case "grün" : return  Color.GREEN;
+            case "hellgrau" : return Color.LIGHT_GRAY;
+            case "magenta" : return Color.MAGENTA;
+            case "orange" : return Color.ORANGE;
+            case "pink" : return Color.PINK;
+            case "rot" : return Color.RED;
+            case "weiß" : return Color.WHITE;
+            case "gelb" : return Color.YELLOW;
+            default : return Color.BLACK;
+        }
     }
 
     /**
@@ -299,5 +382,10 @@ public class Steuerung
     public FX getMenue()
     {
         return menue;
+    }
+
+    public List<String> getColors()
+    {
+        return colors;
     }
 }

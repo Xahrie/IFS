@@ -96,12 +96,28 @@ public class InOut
      * @param fileString Eingabe des Nutzers, wie die Datei heissen soll
      * @return korrekter Dateipfad
      */
-    private String FileStringToPath(String fileString)
+    public String fileStringToPath(String fileString)
     {
         if(fileString.contains("."))
             outputPath = outputPath.substring(0, outputPath.indexOf('.'));
         outputPath = outputPath + ".png";
         return outputPath;
+    }
+
+    public boolean isANumber(String number)
+    {
+        try
+        {
+            int i = Integer.parseInt(number);
+            if(i > 0 && i <= 63_250)
+            {
+                return true;
+            }
+        } catch(NumberFormatException e)
+        {
+            return false;
+        }
+        return false;
     }
 
     /**
@@ -111,6 +127,6 @@ public class InOut
      */
     private boolean doesFileAlreadyExists()
     {
-        return new File(FileStringToPath(this.outputPath)).exists();
+        return new File(fileStringToPath(this.outputPath)).exists();
     }
 }

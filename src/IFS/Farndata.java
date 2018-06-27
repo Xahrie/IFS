@@ -23,6 +23,7 @@ public class Farndata
     private List<Parameters> data;
     private Graph graph;
     private Point start;
+    private byte number;
 
     /**
      * Die Farndata-Methode ist der Konstruktor der Klasse. Er fuellt die drei Parameter des neuen
@@ -71,6 +72,7 @@ public class Farndata
             if(val > r)
             {
                 val = i;
+                number = (byte) val;
                 break;
             }
         }
@@ -117,5 +119,10 @@ public class Farndata
     public Graph getGraph()
     {
         return graph;
+    }
+
+    public byte getNumber()
+    {
+        return number;
     }
 }

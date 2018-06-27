@@ -3,12 +3,17 @@ package IFS;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * FX ist eine Klasse, die das FX-Menue beschreibt. Es handelt sich um eine Klasse, von der
@@ -25,6 +30,7 @@ public class FX implements EventHandler<ActionEvent>
     private Button export = new Button("Exportieren");
     private Button close = new Button("Programm beenden");
     private Button restart = new Button("Programm neustarten");
+    private Parent root;
 
     /**
      * Die FX-Methode bildet den Konstruktor der Klasse. Das entstandene Objekt speichert die
@@ -43,12 +49,18 @@ public class FX implements EventHandler<ActionEvent>
      * Buttons zur VBox hinzugefuegt und die VBox wird zu einer Scene hinzugefuegt die dann zuletzt
      * noch in der Stage gesetzt wird.
      */
-    public void menue()
+    public void menue() throws IOException
     {
-        VBox parent = new VBox();
+
+        root = FXMLLoader.load(getClass().getResource("/IFS/fxml.fxml"));
+        Main.stage.setScene(new Scene(root));
+
+        /*VBox parent = new VBox();
 
         Label label = new Label("Benutzermenue");
         parent.getChildren().add(label);
+
+
 
         Image image = SwingFXUtils.toFXImage(Main.steuerung.getImage(), null);
         ImageView view = new ImageView(image);
@@ -64,7 +76,7 @@ public class FX implements EventHandler<ActionEvent>
         parent.getChildren().add(restart);
 
         Scene scene = new Scene(parent);
-        Main.stage.setScene(scene);
+        Main.stage.setScene(scene);*/
     }
 
     /**
@@ -81,10 +93,14 @@ public class FX implements EventHandler<ActionEvent>
         if(event.getSource().equals(restart))
         {
             Main.steuerung = new Steuerung();
-            Main.steuerung.restart();
         } else if(event.getSource().equals(export))
             Main.steuerung.createFile();
         else if(event.getSource().equals(close))
             System.exit(0);
+    }
+
+    public Parent getRoot()
+    {
+        return this.root;
     }
 }

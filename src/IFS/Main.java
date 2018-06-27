@@ -3,12 +3,22 @@ package IFS;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 /**
  * Main ist die Klasse welche dafuer zustaendig ist, das Programm zu starten und sorgt auch fuer die
  * problemlose Ausfuehrung von JavaFX.
  * @author Steve Woywod
  * @author Martin Zeyner
  * @since v1.0
+ */
+
+/*
+    TODO Verwendung des JavaFX-Tools (FXML)
+    TODO Eingabe der Parameter ueber JavaFX
+    TODO Testprogramme erstellen
+    TODO IFS-Tabelle aus Datei lesen
+    TODO Farben der Farne waehlen
  */
 public class Main extends Application
 {
@@ -23,7 +33,7 @@ public class Main extends Application
     public static void main(String[] args)
     {
         steuerung = new Steuerung();
-        steuerung.execute(false);
+        steuerung.execute();
     }
 
     /**
@@ -42,7 +52,13 @@ public class Main extends Application
     public void start(Stage s)
     {
         stage = s;
-        steuerung.getMenue().menue();
+        try
+        {
+            steuerung.getMenue().menue();
+        } catch(IOException e)
+        {
+            e.printStackTrace();
+        }
         s.show();
     }
 }
