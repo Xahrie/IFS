@@ -9,7 +9,13 @@ package IFS;
  */
 public class Tests
 {
-    public Tests instance()
+
+    /**
+     * Die Instance-Methode fungiert als Konstruktor der Klasse. Darueber koennen weitere Methoden
+     * der Klasse aufgerufen werden.
+     * @return Instanz der Klasse
+     */
+    public static Tests instance()
     {
         return new Tests();
     }
@@ -19,7 +25,8 @@ public class Tests
      */
     public void testEins()
     {
-
+        Main.steuerung.getColors().clear();
+        Main.steuerung.getColors().add("pink");
     }
 
     /**
@@ -28,7 +35,11 @@ public class Tests
      */
     public void testZwei()
     {
-
+        Main.steuerung.getColors().clear();
+        Main.steuerung.getColors().add("pink");
+        Main.steuerung.getColors().add("weiß");
+        Main.steuerung.getColors().add("cyan");
+        Main.steuerung.getColors().add("grün");
     }
 
 }

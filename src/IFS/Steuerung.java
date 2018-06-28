@@ -1,15 +1,19 @@
 package IFS;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.shape.Line;
 
-import javax.annotation.PreDestroy;
 import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.Buffer;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +41,7 @@ public class Steuerung
     private float yMax = 0;
     private float xMin = 0;
     private float yMin = 0;
-    private FX menue;
+    private Parent root;
     private List<String> colors;
 
     /**
@@ -45,10 +49,8 @@ public class Steuerung
      */
     public Steuerung()
     {
-        this.tables = new ArrayList<Farndata>();
         this.iterations = 0;
         this.outputFile = new File("default.txt");
-        this.menue = new FX();
         this.colors = new ArrayList<String>();
     }
 
@@ -63,19 +65,21 @@ public class Steuerung
      * eines Neustarts die Methode IFS.Main.start() zum zweiten Mal aufgerufen wuerde, was jedoch
      * nicht zulaessig ist.
      */
-    public void execute()
+    public void execute(boolean restart)
     {
-        //InOut.instance().eingaben("");
+        this.tables = new ArrayList<Farndata>();
         fillTables();
-        //iterate(false);
-        //graphicalSolution();
-        Main.launching();
-        try
+        if(!restart)
         {
-            menue.menue();
-        } catch(IOException e)
-        {
-            e.printStackTrace();
+            Main.launching();
+            try
+            {
+                root = FXMLLoader.load(getClass().getResource("/IFS/fxml.fxml"));
+                Main.stage.setScene(new Scene(root));
+            } catch(IOException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -86,6 +90,7 @@ public class Steuerung
      */
     public void graphicalSolution()
     {
+        test((byte) 0);
         this.image = createImage();
     }
 
@@ -105,15 +110,19 @@ public class Steuerung
                                    .getDefaultConfiguration().createCompatibleImage(960, 540);
         Graphics2D graphics = image.createGraphics();
         createCoordinates(graphics);
-        if(this.colors == null)
+        if(this.custom == null)
         {
             assert false;
             if(colors.size() == 4)
             {
-                tables.get(0).getGraphics(graphics, getColorFromString(colors.get(0)));
-                tables.get(1).getGraphics(graphics, getColorFromString(colors.get(1)));
-                tables.get(2).getGraphics(graphics, getColorFromString(colors.get(2)));
-                tables.get(3).getGraphics(graphics, getColorFromString(colors.get(3)));
+                tables.get(0).getGraphics(graphics, getColorFromString(
+                        colors.get(tables.get(0).getNumber())));
+                tables.get(1).getGraphics(graphics, getColorFromString(
+                        colors.get(tables.get(1).getNumber())));
+                tables.get(2).getGraphics(graphics, getColorFromString(
+                        colors.get(tables.get(2).getNumber())));
+                tables.get(3).getGraphics(graphics, getColorFromString(
+                        colors.get(tables.get(3).getNumber())));
             } else if(colors.size() == 1)
             {
                 tables.get(0).getGraphics(graphics, getColorFromString(colors.get(0)));
@@ -132,9 +141,9 @@ public class Steuerung
             if(colors.size() == 4)
                 custom.getGraphics(graphics, getColorFromString(colors.get(custom.getNumber())));
             else if(colors.size() == 1)
-                custom.getGraphics(graphics, getColorFromString(colors.get(custom.getNumber())));
+                custom.getGraphics(graphics, getColorFromString(colors.get(0)));
             else
-                custom.getGraphics(graphics, Color.CYAN);
+                custom.getGraphics(graphics, Color.GREEN);
         }
         return image;
     }
@@ -154,7 +163,7 @@ public class Steuerung
         int diffX = (int) (900 * (Math.abs(xMin) / (Math.abs(xMin) + xMax)));
         int diffY = (int) (500 * (yMax / (yMax + Math.abs(yMin))));
         graphics.drawLine(30, 20 + diffY, 930, 20 + diffY);   // x-Achse
-        graphics.drawLine(30 + diffX, 20, 30 + diffX, 520);     // y-Achse
+        graphics.drawLine(30 + diffX, 20, 30 + diffX, 520);   // y-Achse
         // TODO Achsen muessen noch beschriftet werden
     }
 
@@ -218,42 +227,49 @@ public class Steuerung
      */
     public void iterate(boolean customData)
     {
-        if(!customData)
+        if(iterations != 0)
         {
-            for(Farndata f : this.tables)
+            if(!customData)
             {
-                calculatePoints(f);
+                for(Farndata f : this.tables)
+                {
+                    calculatePoints(f);
+                    for(int i = 1; i < this.iterations; i++)
+                    {
+                        Line line = new Line(f.getGraph().getPoints().get(i - 1).getX(),
+                                             f.getGraph().getPoints().get(i - 1).getY(),
+                                             f.getGraph().getPoints().get(i).getX(),
+                                             f.getGraph().getPoints().get(i).getY());
+                        f.getGraph().addLine(line);
+                    }
+                }
+
+            } else
+            {
+                calculatePoints(custom);
                 for(int i = 1; i < this.iterations; i++)
                 {
-                    Line line = new Line(f.getGraph().getPoints().get(i - 1).getX(),
-                                         f.getGraph().getPoints().get(i - 1).getY(),
-                                         f.getGraph().getPoints().get(i).getX(),
-                                         f.getGraph().getPoints().get(i).getY());
-                    f.getGraph().addLine(line);
+                    Line line = new Line(custom.getGraph().getPoints().get(i - 1).getX(),
+                                         custom.getGraph().getPoints().get(i - 1).getY(),
+                                         custom.getGraph().getPoints().get(i).getX(),
+                                         custom.getGraph().getPoints().get(i).getY());
+                    custom.getGraph().addLine(line);
                 }
             }
-
-        } else
-        {
-            calculatePoints(custom);
-            for(int i = 1; i < this.iterations; i++)
-            {
-                Line line = new Line(custom.getGraph().getPoints().get(i - 1).getX(),
-                                     custom.getGraph().getPoints().get(i - 1).getY(),
-                                     custom.getGraph().getPoints().get(i).getX(),
-                                     custom.getGraph().getPoints().get(i).getY());
-                custom.getGraph().addLine(line);
-            }
         }
-
     }
 
+    /**
+     * Die Calculate-Points Methode hat die Aufgabe, die Punkte auf dem Graph zu berechnen und dort
+     * zu speichern. Es werden dort auch Minimal- und Maximalwerte bestimmt.
+     * @param data
+     */
     private void calculatePoints(Farndata data)
     {
         for(int i = 0; i < this.iterations; i++)
         {
-            Point point = custom.berechnung();
-            custom.getGraph().addPoint(point);
+            Point point = data.berechnung();
+            data.getGraph().addPoint(point);
             if(point.getY() > yMax)
                 yMax = point.getY();
             if(point.getX() > xMax)
@@ -295,7 +311,15 @@ public class Steuerung
         this.tables.get(3).addData(0f, 0f, 0f, 0.2f, 0.46f, 0.02f, 0.03f);
     }
 
-    public void generateData(File file) throws IOException
+    /**
+     * Die GenerateData-Methode hat die Aufgabe, ein Farndata-Objekt aus der Input-TXT Datei zu
+     * erstellen. Dabei liest ein BufferedReader Zeile fuer Zeile und sucht sich aus den Zeilen die
+     * Zahlen heraus. Diese werden dann zur Tabelle dieses Farns hinzugefuegt.
+     * @param file Input Datei mit den Daten
+     * @throws IOException           Fehler beim Lesen der Dateien oder wenn diese nicht existiert
+     * @throws NumberFormatException Falls es nicht moeglich ist, einen Float zu generieren
+     */
+    public void generateData(File file) throws IOException, NumberFormatException
     {
         this.custom = new Farndata();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file.getPath()));
@@ -304,18 +328,26 @@ public class Steuerung
         {
             List<Float> values = new ArrayList<Float>();
             line.append(bufferedReader.readLine());
-            for(int j = 0; j < 7; j++)
+            for(int j = 0; j < 6; j++)
             {
                 values.add(Float.valueOf(line.substring(0, line.indexOf(" "))));
                 line.delete(0, line.indexOf(" ") + 1);
             }
-            custom.addData(values.get(0), values.get(1), values.get(2), values.get(3), values.get
-                    (4), values.get(5), values.get(6));
-
+            values.add(Float.valueOf(line.toString()));
+            custom.addData(values.get(0), values.get(1), values.get(2), values.get(3),
+                           values.get(4), values.get(5), values.get(6));
+            line = new StringBuilder();
         }
         bufferedReader.close();
     }
 
+    /**
+     * In der FileToTXT-Methode wird die Eingabe der Input Datei so umgewandelt, dass es sich um
+     * einen TXT-Dateipfad handelt. Dabei wird der String genommen und alles bis zum '.' gekuerzt .
+     * Dann wird ein '.txt' angehangen. Ist kein . vorhanden muss auch nichts gekuerzt werden.
+     * @param fileString Eingabe des Nutzers, wie die Datei heisst
+     * @return korrekter Dateipfad
+     */
     public String fileToTXT(String fileString)
     {
         String outputPath = fileString;
@@ -325,22 +357,90 @@ public class Steuerung
         return outputPath;
     }
 
-    private Color getColorFromString(String string)
+    /**
+     * In der FileToPNG-Methode wird die Eingabe der zu erstellenden Datei so umgewandelt, dass es
+     * sich um einen PNG-Dateipfad handelt. Dabei wird der String genommen und alles bis zum '.'
+     * gekuerzt. Dann wird ein '.png' angehangen. Ist kein . vorhanden muss auch nichts gekuerzt
+     * werden.
+     * @param fileString Eingabe des Nutzers, wie die Datei heissen soll
+     * @return korrekter Dateipfad
+     */
+    public String fileToPNG(String fileString)
     {
-        switch(string)
+        String outputPath = fileString;
+        if(fileString.contains("."))
+            outputPath = outputPath.substring(0, outputPath.indexOf('.'));
+        outputPath = outputPath + ".png";
+        return outputPath;
+    }
+
+    /**
+     * Die Test-Methode ruft die beiden Tests auf.
+     * @param kind Art des Tests (Optionen: 0 -> kein Test; 1 -> Test 1; 2 -> Test 2)
+     */
+    private void test(byte kind)
+    {
+        if(kind == 1)
+            Tests.instance().testEins();
+        else if(kind == 2)
+            Tests.instance().testZwei();
+    }
+
+    /**
+     * In der IsANumber-Methode wird geprueft, ob es sich bei der eingegebenen Zahl wirklich um eine
+     * Zahl, oder etwas anderes handelt.
+     * @param number
+     * @return
+     */
+    public boolean isANumber(String number)
+    {
+        try
         {
-            case "blau" : return Color.BLUE;
-            case "cyan" : return Color.CYAN;
-            case "dunkelgrau" : return Color.DARK_GRAY;
-            case "grün" : return  Color.GREEN;
-            case "hellgrau" : return Color.LIGHT_GRAY;
-            case "magenta" : return Color.MAGENTA;
-            case "orange" : return Color.ORANGE;
-            case "pink" : return Color.PINK;
-            case "rot" : return Color.RED;
-            case "weiß" : return Color.WHITE;
-            case "gelb" : return Color.YELLOW;
-            default : return Color.BLACK;
+            int i = Integer.parseInt(number);
+            if(i > 0 && i <= 63_250)
+                return true;
+        } catch(NumberFormatException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Die GetColorFromString-Methode wandelt die Zeichenketten, welche die Farben in colors
+     * (ArrayList<String>) speichert, in Farben vom Datentyp java.awt.Color um. Die koennen dann zur
+     * Darstellung genutzt werden.
+     * @param color Farbe als String
+     * @return Farbe als Color
+     */
+    private Color getColorFromString(String color)
+    {
+        switch(color)
+        {
+            case "blau":
+                return Color.BLUE;
+            case "cyan":
+                return Color.CYAN;
+            case "dunkelgrau":
+                return Color.DARK_GRAY;
+            case "grün":
+                return Color.GREEN;
+            case "hellgrau":
+                return Color.LIGHT_GRAY;
+            case "magenta":
+                return Color.MAGENTA;
+            case "orange":
+                return Color.ORANGE;
+            case "pink":
+                return Color.PINK;
+            case "rot":
+                return Color.RED;
+            case "weiß":
+                return Color.WHITE;
+            case "gelb":
+                return Color.YELLOW;
+            default:
+                return Color.BLACK;
         }
     }
 
@@ -350,14 +450,6 @@ public class Steuerung
     public void setIterations(int iterations)
     {
         this.iterations = iterations;
-    }
-
-    /**
-     * @return File der Ausgabedatei
-     */
-    public File getOutputFile()
-    {
-        return outputFile;
     }
 
     /**
@@ -377,15 +469,42 @@ public class Steuerung
     }
 
     /**
-     * @return FX fuer das Menue
+     * @return Getter der Farben fuer das Diagramm
      */
-    public FX getMenue()
-    {
-        return menue;
-    }
-
     public List<String> getColors()
     {
         return colors;
+    }
+
+    /**
+     * @return Getter fuer den Root fuer das Zugreifen auf das FXML
+     */
+    public Parent getRoot()
+    {
+        return this.root;
+    }
+
+    /**
+     * @param root Root fuer das FXML
+     */
+    public void setRoot(Parent root)
+    {
+        this.root = root;
+    }
+
+    /**
+     * @param custom Setter fuer die Tabelle des benutzerdefinierten Farns
+     */
+    public void setCustom(Farndata custom)
+    {
+        this.custom = custom;
+    }
+
+    /**
+     * @return Getter fuer die Tabelle des benutzerdefinierten Farns
+     */
+    public Farndata getCustom()
+    {
+        return custom;
     }
 }

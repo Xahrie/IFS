@@ -121,6 +121,9 @@ public class Farndata
         return graph;
     }
 
+    /**
+     * @return Nummer der verwendeten Zeile
+     */
     public byte getNumber()
     {
         return number;

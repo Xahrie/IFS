@@ -1,6 +1,8 @@
 package IFS;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -14,11 +16,8 @@ import java.io.IOException;
  */
 
 /*
-    TODO Verwendung des JavaFX-Tools (FXML)
-    TODO Eingabe der Parameter ueber JavaFX
-    TODO Testprogramme erstellen
-    TODO IFS-Tabelle aus Datei lesen
-    TODO Farben der Farne waehlen
+    TODO Achsenbeschriftungen
+    TODO Path geht nur auf meinem PC.
  */
 public class Main extends Application
 {
@@ -33,7 +32,7 @@ public class Main extends Application
     public static void main(String[] args)
     {
         steuerung = new Steuerung();
-        steuerung.execute();
+        steuerung.execute(false);
     }
 
     /**
@@ -54,7 +53,8 @@ public class Main extends Application
         stage = s;
         try
         {
-            steuerung.getMenue().menue();
+            Main.steuerung.setRoot(FXMLLoader.load(getClass().getResource("/IFS/fxml.fxml")));
+            Main.stage.setScene(new Scene(Main.steuerung.getRoot()));
         } catch(IOException e)
         {
             e.printStackTrace();
