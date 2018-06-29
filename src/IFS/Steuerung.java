@@ -64,6 +64,7 @@ public class Steuerung
      * werden soll. Im Falle eines Neustarts kommt der Parameter (boolean) zum Einsatz, da im Falle
      * eines Neustarts die Methode IFS.Main.start() zum zweiten Mal aufgerufen wuerde, was jedoch
      * nicht zulaessig ist.
+     * @param restart   true, wenn neu gestartet wurde; false, wenn nicht neu gestartet
      */
     public void execute(boolean restart)
     {
@@ -90,7 +91,7 @@ public class Steuerung
      */
     public void graphicalSolution()
     {
-        test((byte) 0);
+        test();
         this.image = createImage();
     }
 
@@ -203,7 +204,6 @@ public class Steuerung
      * sie nicht bereits existiert, und das Bild wird ueber javax.imageio .ImageIO in die Datei
      * geschrieben. Ist die Datei kein Bild, wuerde es einen weiteren Fehler geben. Daher man
      * verwendet man dort zusaetzlich noch eine IOException.
-     * @throws IOException wenn die Datei bereits existiert, gibt es einen Fehler
      */
     public void createFile()
     {
@@ -224,6 +224,7 @@ public class Steuerung
      * als Klassenvariablen. Zudem wird noch fuer jede Iteration die entsprechende Linie errechnet,
      * welcher die Punkte verbinden soll. Diese wird auch zu der Menge der Linien des Graph des
      * entsprechenden Farnes hinzugefuegt.
+     * @param customData true, wenn IFS eingelesen wurde
      */
     public void iterate(boolean customData)
     {
@@ -376,10 +377,11 @@ public class Steuerung
 
     /**
      * Die Test-Methode ruft die beiden Tests auf.
-     * @param kind Art des Tests (Optionen: 0 -> kein Test; 1 -> Test 1; 2 -> Test 2)
+     * kind = Art des Tests (Optionen: 0 -> kein Test; 1 -> Test 1; 2 -> Test 2)
      */
-    private void test(byte kind)
+    private void test()
     {
+        byte kind = 0;
         if(kind == 1)
             Tests.instance().testEins();
         else if(kind == 2)
@@ -389,8 +391,8 @@ public class Steuerung
     /**
      * In der IsANumber-Methode wird geprueft, ob es sich bei der eingegebenen Zahl wirklich um eine
      * Zahl, oder etwas anderes handelt.
-     * @param number
-     * @return
+     * @param number    zu pruefende Nummer
+     * @return true, wenn es ein nutzbarer Integer ist
      */
     public boolean isANumber(String number)
     {

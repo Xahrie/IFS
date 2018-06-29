@@ -16,6 +16,13 @@ public class Parameters
     /**
      * Die Parameters-Methode ruft diese Klasse auf und fuellt die einzelnen Parameter zur
      * Berechnung auf.
+     * @param a Parameter a
+     * @param b Parameter b
+     * @param c Parameter c
+     * @param d Parameter d
+     * @param e Parameter e
+     * @param f Parameter f
+     * @param p Parameter p
      */
     public Parameters(float a, float b, float c, float d, float e, float f, float p)
     {
