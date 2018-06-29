@@ -2,8 +2,7 @@ package IFS;
 
 import javafx.scene.shape.Line;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.List;
  * Parameters(float, float, float, float, float, float, float) gefuellt werden kann. Zudem die Daten
  * des Graphs, also die Punkte und zugehoerigen Linien. Zuletzt wird aber auch noch ein Punkt als
  * Startwert gespeichert, also der Ausgangspunkt des Farns.
+ *
  * @author Steve Woywod
  * @author Martin Zeyner
  * @since v1.0
@@ -40,6 +40,7 @@ public class Farndata
      * Die AddData-Methode implementiert eine Zeile einer neuen Tabelle mit Parametern zur
      * Berechnung der Farne. Dabei wird diese Zeile mit Werten als neues Parameters-Objekt erstellt
      * und in die (data)-ArrayList eingesetzt.
+     *
      * @param a Parameter a
      * @param b Parameter b
      * @param c Parameter c
@@ -60,6 +61,7 @@ public class Farndata
      * aus (data) ermittelt (val) so die erfolderlichen sechs Parameter. Daraufhin findet mit diesen
      * Werten die Berechnung des neuen Punktes statt. Dieser Punkt wird dann wieder als Startpunkt
      * in Farndata.start gespeichert und zudem an die Steuerung uebergeben.
+     *
      * @return neuer Punkt des Farns
      */
     public Point berechnung()
@@ -92,6 +94,7 @@ public class Farndata
      * verwenden koennen, nutzen wir Line2D. Damit man auch in kleinen Bereichen noch etwas erkennt,
      * werden nur die ersten 10 Punkte abgebildet. Die uebrigen Punkte lassen sich durch die Linien
      * zumindest erahnen, da die Enden der Linien genau auf den Punkten liegen.
+     *
      * @param graphics Graphics2D Zeichenoberflaeche, die zur Darstellung in JavaFX dient
      * @param color    Farbe, in der Punkte und Linien dargestellt werden sollen
      */

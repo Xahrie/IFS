@@ -10,23 +10,20 @@ import java.io.IOException;
 /**
  * Main ist die Klasse welche dafuer zustaendig ist, das Programm zu starten und sorgt auch fuer die
  * problemlose Ausfuehrung von JavaFX.
+ *
  * @author Steve Woywod
  * @author Martin Zeyner
  * @since v1.0
  */
-
-/*
-    TODO Achsenbeschriftungen
-    TODO Path geht nur auf meinem PC.
- */
 public class Main extends Application
 {
-    public static Steuerung steuerung;
     public static Stage stage;
+    public static Steuerung steuerung;
 
     /**
      * Main startet das Programm und ruft eine neue Instanz der Steuerung auf. Deren Methode
      * execute(boolean) startet dann die Algorithmen.
+     *
      * @param args Automatisch generiert (Main-Methode)
      */
     public static void main(String[] args)
@@ -46,6 +43,7 @@ public class Main extends Application
     /**
      * Die Start-Methode wurde von Application implementiert. Diese Methode ist essentiell zur
      * Erstellung bzw. Nutzung von JavaFX.
+     *
      * @param s Stage fuer das verwendete JavaFX
      */
     public void start(Stage s)

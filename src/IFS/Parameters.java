@@ -5,6 +5,7 @@ package IFS;
  * Eigenschaften. Die Parameters speichert Parameter, die zur Berechnung der Farne dienen. Diese
  * Parameter tragen die Namen a, b, c, d, e, f und p fuer die Wahrscheinlichkeit. Diese werden aus
  * den Tabellen uebernommen und eingelesen.
+ *
  * @author Steve Woywod
  * @author Martin Zeyner
  * @since v1.0
@@ -16,6 +17,7 @@ public class Parameters
     /**
      * Die Parameters-Methode ruft diese Klasse auf und fuellt die einzelnen Parameter zur
      * Berechnung auf.
+     *
      * @param a Parameter a
      * @param b Parameter b
      * @param c Parameter c

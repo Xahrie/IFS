@@ -3,16 +3,17 @@ package IFS;
 /**
  * Tests ist die Klasse welche dafuer zustaendig ist, die in der Aufgabe angegebenen Tests
  * durchzufuehren.
+ *
  * @author Steve Woywod
  * @author Martin Zeyner
  * @since v2.0
  */
 public class Tests
 {
-
     /**
      * Die Instance-Methode fungiert als Konstruktor der Klasse. Darueber koennen weitere Methoden
      * der Klasse aufgerufen werden.
+     *
      * @return Instanz der Klasse
      */
     public static Tests instance()

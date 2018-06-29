@@ -6,9 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.shape.Line;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,25 +22,21 @@ import java.util.List;
  * die darzustellende Bilddatei im PNG-Format, die Skalierung der beiden Achsen des
  * Koordinatensystems, die groessten- und kleinsten Werte innerhalb des Koordinatensystems und das
  * Anzeigemenue, dass die berechneten Daten grafisch darstellt.
+ *
  * @author Steve Woywod
  * @author Martin Zeyner
  * @since v1.0
  */
 public class Steuerung
 {
-    private List<Farndata> tables;
-    private Farndata custom;
-    private int iterations;
-    private File outputFile;
     private BufferedImage image;
-    private float scaleX;
-    private float scaleY;
-    private float xMax = 0;
-    private float yMax = 0;
-    private float xMin = 0;
-    private float yMin = 0;
-    private Parent root;
+    private Farndata custom;
+    private File outputFile;
+    private List<Farndata> tables;
     private List<String> colors;
+    private Parent root;
+    private float scaleX, scaleY, xMin, xMax, yMin, yMax;
+    private int iterations;
 
     /**
      * Die Steuerung-Methode ruft diese Klasse auf und fuellt die Klassenvariablen auf.
@@ -50,6 +44,10 @@ public class Steuerung
     public Steuerung()
     {
         this.iterations = 0;
+        this.xMax = 0;
+        this.yMax = 0;
+        this.xMin = 0;
+        this.yMin = 0;
         this.outputFile = new File("default.txt");
         this.colors = new ArrayList<String>();
     }
@@ -64,7 +62,8 @@ public class Steuerung
      * werden soll. Im Falle eines Neustarts kommt der Parameter (boolean) zum Einsatz, da im Falle
      * eines Neustarts die Methode IFS.Main.start() zum zweiten Mal aufgerufen wuerde, was jedoch
      * nicht zulaessig ist.
-     * @param restart   true, wenn neu gestartet wurde; false, wenn nicht neu gestartet
+     *
+     * @param restart true, wenn neu gestartet wurde; false, wenn nicht neu gestartet
      */
     public void execute(boolean restart)
     {
@@ -102,6 +101,7 @@ public class Steuerung
      * createCoordinates(Graphics2D) erstellt x- und y-Achse des Koordinatensystems. Zuletzt werden
      * Punkte und Linien der berechneten Farne auf das Bild aufgetragen. Dies geschieht durch die
      * Instanzmethoden der Klasse IFS.Farndata IFS.Farndata.getGraphics(Graphics2D, Color).
+     *
      * @return fertiges BufferedImage zur Darstellung in JavaFX.
      */
     private BufferedImage createImage()
@@ -154,23 +154,46 @@ public class Steuerung
      * Oberflaeche, die als Parameter mitgegeben wird. Gefolgt davon wird die Skalierung der Achsen
      * berechnet und ebenfalls als Klassenvariable gespeichert. Dies geschieht sowohl fuer die eine,
      * als auch fuer die andere Achse. Zuletzt werden auf Grundlage der Minimal- und Maximalwerte
-     * die Achsen gezeichnet.
+     * die Achsen gezeichnet. Dann wird noch eine Skala abgetragen.
+     *
      * @param graphics Liefert die Zeichenoberflaeche
      */
     private void createCoordinates(Graphics2D graphics)
     {
+        System.out.print(xMax + "; " + yMax + "; " + xMin + "; " + yMin);
         this.scaleX = 900 / (xMax + Math.abs(xMin));
         this.scaleY = 500 / (yMax + Math.abs(yMin));
         int diffX = (int) (900 * (Math.abs(xMin) / (Math.abs(xMin) + xMax)));
         int diffY = (int) (500 * (yMax / (yMax + Math.abs(yMin))));
         graphics.drawLine(30, 20 + diffY, 930, 20 + diffY);   // x-Achse
         graphics.drawLine(30 + diffX, 20, 30 + diffX, 520);   // y-Achse
-        // TODO Achsen muessen noch beschriftet werden
+        int amountXLines = (int) (this.xMax + Math.abs(this.xMin) / 50);
+        int amountYLines = (int) (this.yMax + Math.abs(this.yMin) / 50);
+        double x = this.xMin + Math.abs(this.xMin % 50);
+        double y = this.yMin + Math.abs(this.yMin % 50);
+        graphics.drawOval((int) getXOnGraph(50), (int) getYOnGraph(50), 5, 5);
+        for(int i = 0; i < amountXLines; i++)
+        {
+            graphics.drawLine((int) getXOnGraph(x), (int) getYOnGraph(-3), (int) getXOnGraph(x),
+                              (int) getYOnGraph(2));
+            graphics.drawString(String.valueOf((int) x), (int) getXOnGraph(x - 20),
+                                (int) getYOnGraph(-30));
+            x += 50;
+        }
+        for(int i = 0; i < amountYLines; i++)
+        {
+            graphics.drawLine((int) getXOnGraph(-1), (int) getYOnGraph(y), (int) getXOnGraph(3),
+                              (int) getYOnGraph(y));
+            graphics.drawString(String.valueOf((int) y), (int) getXOnGraph(-45),
+                                (int) getYOnGraph(y - 10));
+            y += 50;
+        }
     }
 
     /**
      * Die GetXOnGraph-Methode hat die Aufgabe errechnete x-Werte so umzurechnen, dass sie fuer das
      * Koordinatensystem brauchbar sind und korrekt dargestellt werden koennen.
+     *
      * @param x Liefert das mit Algorithmen errechnete x-Wert eines Punktes
      * @return x-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
      */
@@ -185,15 +208,16 @@ public class Steuerung
     /**
      * Die GetYOnGraph-Methode hat die Aufgabe errechnete y-Werte so umzurechnen, dass sie fuer das
      * Koordinatensystem brauchbar sind und korrekt dargestellt werden koennen.
+     *
      * @param y Liefert das mit Algorithmen errechnete y-Wert eines Punktes
      * @return y-Wert, der fuer die Darstellung im Koordinatensystem geeignet ist
      */
     public double getYOnGraph(double y)
     {
         if(y >= 0)
-            return 520 - y * scaleY;
+            return 520 - (y + Math.abs(yMin)) * scaleY;
         else
-            return 520 - (xMax + Math.abs(y)) * scaleY;
+            return 520 - (Math.abs(yMin) - Math.abs(y)) * scaleY;
     }
 
     /**
@@ -224,6 +248,7 @@ public class Steuerung
      * als Klassenvariablen. Zudem wird noch fuer jede Iteration die entsprechende Linie errechnet,
      * welcher die Punkte verbinden soll. Diese wird auch zu der Menge der Linien des Graph des
      * entsprechenden Farnes hinzugefuegt.
+     *
      * @param customData true, wenn IFS eingelesen wurde
      */
     public void iterate(boolean customData)
@@ -263,6 +288,7 @@ public class Steuerung
     /**
      * Die Calculate-Points Methode hat die Aufgabe, die Punkte auf dem Graph zu berechnen und dort
      * zu speichern. Es werden dort auch Minimal- und Maximalwerte bestimmt.
+     *
      * @param data
      */
     private void calculatePoints(Farndata data)
@@ -316,6 +342,7 @@ public class Steuerung
      * Die GenerateData-Methode hat die Aufgabe, ein Farndata-Objekt aus der Input-TXT Datei zu
      * erstellen. Dabei liest ein BufferedReader Zeile fuer Zeile und sucht sich aus den Zeilen die
      * Zahlen heraus. Diese werden dann zur Tabelle dieses Farns hinzugefuegt.
+     *
      * @param file Input Datei mit den Daten
      * @throws IOException           Fehler beim Lesen der Dateien oder wenn diese nicht existiert
      * @throws NumberFormatException Falls es nicht moeglich ist, einen Float zu generieren
@@ -346,6 +373,7 @@ public class Steuerung
      * In der FileToTXT-Methode wird die Eingabe der Input Datei so umgewandelt, dass es sich um
      * einen TXT-Dateipfad handelt. Dabei wird der String genommen und alles bis zum '.' gekuerzt .
      * Dann wird ein '.txt' angehangen. Ist kein . vorhanden muss auch nichts gekuerzt werden.
+     *
      * @param fileString Eingabe des Nutzers, wie die Datei heisst
      * @return korrekter Dateipfad
      */
@@ -363,6 +391,7 @@ public class Steuerung
      * sich um einen PNG-Dateipfad handelt. Dabei wird der String genommen und alles bis zum '.'
      * gekuerzt. Dann wird ein '.png' angehangen. Ist kein . vorhanden muss auch nichts gekuerzt
      * werden.
+     *
      * @param fileString Eingabe des Nutzers, wie die Datei heissen soll
      * @return korrekter Dateipfad
      */
@@ -391,7 +420,8 @@ public class Steuerung
     /**
      * In der IsANumber-Methode wird geprueft, ob es sich bei der eingegebenen Zahl wirklich um eine
      * Zahl, oder etwas anderes handelt.
-     * @param number    zu pruefende Nummer
+     *
+     * @param number zu pruefende Nummer
      * @return true, wenn es ein nutzbarer Integer ist
      */
     public boolean isANumber(String number)
@@ -412,6 +442,7 @@ public class Steuerung
      * Die GetColorFromString-Methode wandelt die Zeichenketten, welche die Farben in colors
      * (ArrayList<String>) speichert, in Farben vom Datentyp java.awt.Color um. Die koennen dann zur
      * Darstellung genutzt werden.
+     *
      * @param color Farbe als String
      * @return Farbe als Color
      */
@@ -495,18 +526,18 @@ public class Steuerung
     }
 
     /**
-     * @param custom Setter fuer die Tabelle des benutzerdefinierten Farns
-     */
-    public void setCustom(Farndata custom)
-    {
-        this.custom = custom;
-    }
-
-    /**
      * @return Getter fuer die Tabelle des benutzerdefinierten Farns
      */
     public Farndata getCustom()
     {
         return custom;
+    }
+
+    /**
+     * @param custom Setter fuer die Tabelle des benutzerdefinierten Farns
+     */
+    public void setCustom(Farndata custom)
+    {
+        this.custom = custom;
     }
 }

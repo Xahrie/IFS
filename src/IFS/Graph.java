@@ -9,14 +9,15 @@ import java.util.List;
  * Graph ist eine Klasse, welche sich instanziieren laesst. Objekte dieses Typs speichern zwei
  * Listen. Eine mit Punkten und eine mit Linien. Da werden die Daten gespeichert, die bei
  * Farndata.getGraphics(Graphics2D, Color) visualisiert werden sollen.
+ *
  * @author Steve Woywod
  * @author Martin Zeyner
  * @since v1.0
  */
 public class Graph
 {
-    private List<Point> points;
     private List<Line> lines;
+    private List<Point> points;
 
     /**
      * Die Graph-Methode ist der Konstruktor der Klasse. Dieser fuellt die Variablen der Klasse so

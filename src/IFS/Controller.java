@@ -15,6 +15,7 @@ import java.io.IOException;
 /**
  * Die Controller-Klasse ist die Steuerklasse fuer das FXML. Diese steuert Eingaben in Feldern und
  * die Events fuer die Buttons.
+ *
  * @author Steve Woywod
  * @author Martin Zeyner
  * @since v2.0
@@ -26,18 +27,8 @@ public class Controller
     private ComboBox<String> farbe;
 
     /**
-     * Die Instance-Methode fungiert als Konstruktor der Klasse. Darueber koennen weitere Methoden
-     * der Klasse aufgerufen werden.
-     *
-     * @return Instanz der Klasse
-     */
-    public static Controller instance()
-    {
-        return new Controller();
-    }
-
-    /**
      * Die InputAction-Methode steuert die Events fuer das Betaetigen der Buttons.
+     *
      * @param event Event fuer das Klicken auf einen Button
      */
     @FXML
@@ -145,8 +136,8 @@ public class Controller
             case "Exportieren":
                 field = (TextField) Main.steuerung.getRoot().lookup("#exportdatei");
                 if(field != null)
-                    if(!new File("IFS\\src\\tests\\" +
-                                 Main.steuerung.fileToPNG(field.getText())).exists())
+                    if(!new File("IFS\\src\\tests\\" + Main.steuerung.fileToPNG(field.getText()))
+                            .exists())
                     {
                         Main.steuerung.setOutputFile(new File(
                                 "IFS\\src\\tests\\" + Main.steuerung.fileToPNG(field.getText())));
